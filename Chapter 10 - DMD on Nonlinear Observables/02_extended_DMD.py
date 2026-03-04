@@ -36,7 +36,7 @@ for k in range(m - 1):
 # =============================================================================
 # ADIM 2: EXTENDED DMD (EDMD) - KOOPMAN GÖZLEMLERİ
 # =============================================================================
-# 1. Gözlem Sözlüğünü (Observable Dictionary) Oluşturma
+# 1. Gözlem Sözlüğünü/Matrislerini (Observable Dictionary) Oluşturma
 # Yeni uzayımız 3 boyutlu olacak: [x1, x2, x1^2]
 Y_true = np.zeros((3, m))
 Y_true[0, :] = X_true[0, :]       # x1
@@ -48,7 +48,7 @@ Y2 = Y_true[:, 1:]  # Gelecek Gözlemler
 
 # 2. EDMD (Koopman Matrisi - K) Hesaplama
 # Artık X yerine, bu Y matrisi üzerinde çalışıyoruz
-K_edmd = Y2 @ np.linalg.pinv(Y1)
+K_edmd = Y2 @ np.linalg.pinv(Y1) # Koopman Matrisi K = Y2@Y1(pseudo inverse hali)
 
 # 3. Geleceği Tahmin Etme (EDMD ile)
 Y_edmd_pred = np.zeros((3, m))

@@ -32,10 +32,10 @@ X2 = X_true[:, 1:]   # Gelecek (Y')
 
 
 # =============================================================================
-# 2. STANDART DMD (BÖLÜM 1) UYGULAMASI
+# 2. STANDART DMD UYGULAMASI
 # =============================================================================
 # Standart DMD sadece x2 = A * x1 denklemini çözmeye çalışır.
-A_std = X2 @ np.linalg.pinv(X1)
+A_std = X2 @ np.linalg.pinv(X1) # pseudo inverse
 
 # Geleceği yanlış A matrisiyle tahmin edelim
 X_std_pred = np.zeros((2, m))

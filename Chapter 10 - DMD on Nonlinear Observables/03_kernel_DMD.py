@@ -33,23 +33,23 @@ X2 = X_true[:, 1:]   # Gelecek (Y')
 # Polinom kernel ile iç çarpım matrislerini oluşturuyoruz
 # Polinom Kernel: k(x, y) = (1 + x^T * y)^2
 
-# Gram Matrisleri (Sadece m x m boyutunda, yani 199 x 199)
-G = (1 + X1.T @ X1)**2      # Geçmişin kendisiyle benzerliği
-A_hat = (1 + X1.T @ X2)**2  # Geçmişin gelecekle benzerliği
+# Gram Matrisleri (Sadece m x m boyutunda, yani 199 x 199) (Replay Bufferdaki her bir anın, diğer anlarla ne kadar benzediğini(iç çarpım) gösterir)
+G = (1 + X1.T @ X1)**2      # Geçmişin kendisiyle benzerliği, G => gram matrisi geçmişin kendisiyle çarpımı. (BU SAYEDE SİMETRİK OLUR)
+A_hat = (1 + X1.T @ X2)**2  # Geçmişin gelecekle benzerliği, G matrisine benzer, t anındaki verilerin t+1 anındaki verilerle benzerliğini/korelasyonunu ölçer. Zaman içindeki değişim bu matrisin içinde gizlidir.
 
 # G matrisinin SVD'si (Yüksek boyutlu bir uzaya çıkmadan hesaplama yapıyoruz)
-eigvals, V = np.linalg.eigh(G)
+eigvals, V = np.linalg.eigh(G) # simetrik/hermitian eigenvalue decomposition. Daha hızlı, hafıza kullanımı daha iyi
 
 # Çok küçük özdeğerleri (gürültüyü) at
 valid = eigvals > 1e-10
-Sigma2 = eigvals[valid]
-V = V[:, valid]
+Sigma2 = eigvals[valid] # Koopman modlarının "Enerjileri"/varyansını tutar
+V = V[:, valid] # V ise temel özellikleri tutar
 
 Sigma = np.diag(np.sqrt(Sigma2))
 Sigma_inv = np.diag(1.0 / np.sqrt(Sigma2))
 
 # Kernel uzayındaki Koopman Matrisi (r x r boyutunda)
-K_kernel = (Sigma @ V.T) @ A_hat @ (V @ Sigma_inv)
+K_kernel = (Sigma @ V.T) @ A_hat @ (V @ Sigma_inv) # kernel uzayındaki Koopman Matrisi
 
 print("--- KERNEL DMD ÖZDEĞERLERİ ---")
 # K_kernel'in özdeğerleri, EDMD'nin (K_edmd) özdeğerleriyle eşleşecek
